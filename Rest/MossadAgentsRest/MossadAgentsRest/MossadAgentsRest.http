@@ -1,0 +1,6 @@
+@MossadAgentsRest_HostAddress = http://localhost:5065
+
+GET {{MossadAgentsRest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
