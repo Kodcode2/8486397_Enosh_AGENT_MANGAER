@@ -135,3 +135,4 @@ C:\Users\Efrat\Desktop\kodekod_2\c#\AgensExem\Rest\MossadAgentsRest\MossadAgents
 C:\Users\Efrat\Desktop\kodekod_2\c#\AgensExem\Rest\MossadAgentsRest\MossadAgentsRest\obj\Debug\net8.0\MossadAgentsRest.pdb
 C:\Users\Efrat\Desktop\kodekod_2\c#\AgensExem\Rest\MossadAgentsRest\MossadAgentsRest\obj\Debug\net8.0\MossadAgentsRest.genruntimeconfig.cache
 C:\Users\Efrat\Desktop\kodekod_2\c#\AgensExem\Rest\MossadAgentsRest\MossadAgentsRest\obj\Debug\net8.0\ref\MossadAgentsRest.dll
+C:\Users\Efrat\Desktop\kodekod_2\c#\AgensExem\Rest\MossadAgentsRest\MossadAgentsRest\obj\Debug\net8.0\MossadAgentsRest.sourcelink.json
