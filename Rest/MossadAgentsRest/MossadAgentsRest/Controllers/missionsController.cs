@@ -10,27 +10,61 @@ namespace MossadAgentsRest.Controllers
     [ApiController]
     public class missionsController(IMissionService missionService) : ControllerBase
     {
-        [HttpPost("update")]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<MissionModel>>> GetAllMissions() =>
+            Ok(await missionService.GetAllMissionsAsync());
+
+
+        [HttpGet("id")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MissionModel>> GetMissionById(int id) =>
+            Ok(await missionService.GetMissionById(id));
+
+
+        [HttpGet("Dashboard")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<DashboardModel>>> GetInfoToDashboard() =>
+           Ok(await missionService.GetDashboardModel());
+
+
+        [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task GetAllMissions()
+        public async Task<ActionResult> CreateMissions()
         {            
             while (true)
             {
-                var a = await missionService.DoMission();
-                await Task.Delay(5000);
+                await missionService.DoMission();
+                await Task.Delay(3000);
             }
-            //return Ok("request is successfully");
+            int missionId = 0;
+            return Ok("request is successfully");
         }
 
 
-        [HttpPost("active")]
+        [HttpPost("update")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task ActiveAgent()
+        public async Task<ActionResult> Update()
         {
-            
-            //return Ok("request is successfully");
+            await missionService.MoveAgentToTarget();
+            await missionService.DoMission();
+            return Ok("request is successfully");
+        }
+
+
+        [HttpPut("active/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> ChangeStatus(int id)
+        {    
+            await missionService.ChangeStatusToActive(id);
+            await missionService.DoMission();
+            return Ok("active successfully");    
         }
     }
 }

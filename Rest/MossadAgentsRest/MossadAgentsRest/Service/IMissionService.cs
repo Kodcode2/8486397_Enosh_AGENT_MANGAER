@@ -4,12 +4,26 @@ namespace MossadAgentsRest.Service
 {
     public interface IMissionService
     {
-        Task<MissionModel>CreateNewMission(List<AgentModel>agents,List<TargetModel>targets);
-        public Task<MissionModel> DoMission();
-        public Task<List<MissionModel>> GetAllmission();
-        public Task<double> CalculateTime(AgentModel agent, TargetModel target);
-        public Task<bool> GetAgentIdIfIsInMission(int AgentId, int targetId);
-        public Task ActiveAgent(MissionModel mission);
+        public Task DoMission();
+        public Task<MissionModel>ManageMission();
+        public Task<List<MissionModel>> GetAllmissionAsync();
+        public Task<List<MissionModel>>GetMissionByStatus();
+        public Task<double> CalculateRange(AgentModel agent, TargetModel target);
+        public Task<bool> CheckAgentIdIfIsInMissionAndDelete(int AgentId, int targetId);
+        public Task MoveAgentToTarget();
+        public Task KillTarget(MissionModel missionModel);
+        public Task ChangeStatusToActive(int id);
+        public Task<MissionModel>GetMissionByIdIncludObjectsAsync(int missionId);
+        public Task<AgentModel> GetAgentById(int agentId);
+        public Task<bool> DeleteIfOutOfRange(MissionModel mission);
+        public Task<List<MissionModel>> GetAllMissionsAsync();
+        public Task<DashboardModel> GetDashboardModel();
+        public Task StartTimerActiveMission(int idMission);
+        public Task<MissionModel?> GetMissionById(int id);
+        public Task<List<TargetModel>> GetAllTargetsAsync();
+        public Task<List<AgentModel>> GetAllAgentsAsync();
+        public Task DeletMissionIfAgentActive(int agentId);
+        public Task DeletMissionIfTargetDead(int TargetId);
 
     }
 }

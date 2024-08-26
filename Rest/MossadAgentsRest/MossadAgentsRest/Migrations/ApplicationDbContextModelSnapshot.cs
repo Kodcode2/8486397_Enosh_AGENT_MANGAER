@@ -46,6 +46,9 @@ namespace MossadAgentsRest.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("kills_sum")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("AgentModel");
@@ -65,14 +68,18 @@ namespace MossadAgentsRest.Migrations
                     b.Property<DateTime>("KillTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("LeftTime")
-                        .HasColumnType("float");
+                    b.Property<string>("LeftTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TargetId")
                         .HasColumnType("int");
 
-                    b.Property<int>("status")
-                        .HasColumnType("int");
+                    b.Property<string>("TimeFromStartToEnd")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

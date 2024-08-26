@@ -8,7 +8,8 @@ namespace MossadAgentsRest.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class agentsController(IAgentService agentService) : ControllerBase
+    public class agentsController(IAgentService agentService ,IMissionService missionService
+        ) : ControllerBase
     {
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -19,14 +20,15 @@ namespace MossadAgentsRest.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<AgentDto>> CreatAgent(AgentDto agent)
         {
             if (agent == null) 
             {
-                return NotFound("agent is null");
+                return BadRequest("agent is null");
             }
             var res = await agentService.CreateAgentAsync(agent);
+            await missionService.DoMission();
             return Created("agent inserted successfully", new { id = res.Id});
         }
 
@@ -38,11 +40,13 @@ namespace MossadAgentsRest.Controllers
         {
             if (agent == null)
             {
-                return NotFound();
+                return NotFound("not found");
             }
             var s = await agentService.UpdatAgentAsync(agent,id);
+            await missionService.DoMission();
             return Ok("agent updated successfully");
         }
+
 
         [HttpPut("{id}/pin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -51,14 +55,15 @@ namespace MossadAgentsRest.Controllers
         {
             if (Location == null)
             {
-                return NotFound();
+                return NotFound("not found");
             }       
             var s = await agentService.PinAgentByIdAsync(Location, id);
+            await missionService.DoMission();
             return Ok("agent updated successfully");
         }
 
 
-        [HttpPut("{id}/Move")]
+        [HttpPut("{id}/move")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<string>> MoveAgent(string move, int id)
@@ -67,8 +72,9 @@ namespace MossadAgentsRest.Controllers
             {
                 return NotFound();
             }
-            var s = await agentService.NoveAgentByIdAsync(move, id);
+            var s = await agentService.MoveAgentByIdAsync(move, id);
+            await missionService.DoMission();
             return Ok("agent updated successfully");
-        }      
+        }    
     }
 }

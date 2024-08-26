@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MossadAgenseMvc")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1b920a202b70ae1d2823ee0ed965805f14f9b21e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fb009978bb4b4367d0f94ae25600c139f60e9739")]
 [assembly: System.Reflection.AssemblyProductAttribute("MossadAgenseMvc")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MossadAgenseMvc")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

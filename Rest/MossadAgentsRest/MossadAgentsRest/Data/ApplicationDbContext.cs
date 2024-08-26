@@ -45,11 +45,15 @@ namespace MossadAgentsRest.Data
                 .Property(m => m.Status)
                 .HasConversion<string>()
                 .IsRequired();
-           /* modelBuilder.Entity<MissionModel>()
-                .HasOne(m => m.Target)
-                .WithMany()
-                .HasForeignKey(m => m.TargetId)
-                .OnDelete(DeleteBehavior.Restrict);*/
+            modelBuilder.Entity<MissionModel>()
+               .Property(m => m.Status)
+               .HasConversion<string>()
+               .IsRequired();
+            /* modelBuilder.Entity<MissionModel>()
+                 .HasOne(m => m.Target)
+                 .WithMany()
+                 .HasForeignKey(m => m.TargetId)
+                 .OnDelete(DeleteBehavior.Restrict);*/
 
             base.OnModelCreating(modelBuilder);
         }

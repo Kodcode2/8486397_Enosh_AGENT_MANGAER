@@ -1,0 +1,71 @@
+﻿@model IEnumerable<MossadAgenseMvc.Models.MissionModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AgentId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TargetId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeftTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeFromStartToEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.KillTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AgentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TargetId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LeftTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeFromStartToEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.KillTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.status)
+            </td>
+            <td>
+                @Html.ActionLink("UpdateToActive", "UpdateToActive", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

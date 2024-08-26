@@ -10,9 +10,10 @@
         public int Id { get; set; }
         public string? Image { get; set; }
         public string? Name { get; set; }
-        public int Location_X { get; set; } = -1;
-        public int Location_Y { get; set; } = -1;
+        public int Location_X { get; set; }
+        public int Location_Y { get; set; } 
         public List<MissionModel>? Missions { get; set; }
-        public StatusAgent Status { get; set; } = StatusAgent.Sleep;
+        public int kills_sum { get; set; }
+        public StatusAgent Status { get; set; }
     }
 }

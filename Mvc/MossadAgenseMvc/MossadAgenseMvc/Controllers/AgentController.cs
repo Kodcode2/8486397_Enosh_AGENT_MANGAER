@@ -2,46 +2,34 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
+using MossadAgenseMvc.Models;
 
 namespace MossadAgenseMvc.Controllers
 {
     public class AgentController(IHttpClientFactory clientFactory) : Controller
     {
-        private readonly string BaseUrl = "https://localhost:7024/api/Agents";
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        /*public IActionResult Update(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Update(UserVM user)
+        private readonly string BaseUrl = "https://localhost:7024";
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
             var httpClient = clientFactory.CreateClient();
-            var httpContent = new StringContent(
-                JsonSerializer.Serialize(new
-                {
-                    user.Name,
-                    user.Email,
-                    user.Password,
-                    //Image = ImageUtils.ConvertFromIformFile(user.Image),
-                }),
-                Encoding.UTF8,
-                "application/json"
-            );
-            var request = new HttpRequestMessage(HttpMethod.Put, $"{BaseUrl}/update/{user.Id}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authenticatin.Token);
-            ///httpContent;
-            var result = await httpClient.PutAsync($"{BaseUrl}/update/{user.Id}", httpContent);
-            if (result.IsSuccessStatusCode)
+            var responce = await httpClient.GetAsync($"{BaseUrl}/agents");
+            if (responce.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                string content = await responce.Content.ReadAsStringAsync();
+                List<AgentModel>? Agents = JsonSerializer.Deserialize<List<AgentModel>>
+                    (content, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                return View(Agents);
             }
-            return RedirectToAction("Index");
-        }*/
+            return RedirectToAction("Index", "Home");
+
+        }
+
+        public IActionResult Update(int id)
+        {
+            return View(new AgentModel() { Id = id});
+        }
+
+        
     }
 }

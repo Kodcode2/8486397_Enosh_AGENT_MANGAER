@@ -5,9 +5,9 @@ using MossadAgentsRest.Models;
 
 namespace MossadAgentsRest.Service
 {
-    public class AgentService(ApplicationDbContext contects) : IAgentService
+    public class AgentService(ApplicationDbContext contexts) : IAgentService
     {
-        private readonly ApplicationDbContext _contects = contects;
+        private readonly ApplicationDbContext _contexts = contexts;
 
         public async Task<AgentModel?> CreateAgentAsync(AgentDto agent)
         {
@@ -19,10 +19,11 @@ namespace MossadAgentsRest.Service
                Location_Y = agent.Location_Y,
                Status = 0,
             };
-            await _contects.AgentModel.AddAsync(newAgent);
-            await _contects.SaveChangesAsync();
+            await _contexts.AgentModel.AddAsync(newAgent);
+            await _contexts.SaveChangesAsync();
             return newAgent;
         }
+
 
         public async Task<AgentModel?>UpdatAgentAsync(AgentDto agent, int id)
         {
@@ -34,12 +35,10 @@ namespace MossadAgentsRest.Service
                 OldAgent.Location_X = agent.Location_X;
                 OldAgent.Image = agent.PhotoUrl;
                 OldAgent.Location_Y = agent.Location_Y;
-                OldAgent.Status = 0;//agent.Status ?? 0;
+                OldAgent.Status = 0;
             }
-            await _contects.SaveChangesAsync();
+            await _contexts.SaveChangesAsync();
             return OldAgent;
-
-                     
         }
 
 
@@ -48,16 +47,15 @@ namespace MossadAgentsRest.Service
             AgentModel? OldAgent = await FindAgentByIdAsync(id);
             if (OldAgent != null)
             {
-                OldAgent.Location_X = pin.Location_X;
-                OldAgent.Location_Y= pin.Location_Y;
+                OldAgent.Location_X = pin.x;
+                OldAgent.Location_Y= pin.y;
             }
-            await _contects.SaveChangesAsync();
+            await _contexts.SaveChangesAsync();
             return OldAgent;
         }
-        public async Task<AgentModel?> FindAgentByIdAsync(int id) =>
-          await _contects.AgentModel.FindAsync(id) ?? null;
 
-        public async Task<AgentModel?> NoveAgentByIdAsync(string move, int id)
+
+        public async Task<AgentModel?> MoveAgentByIdAsync(string move, int id)
         {
             AgentModel? OldAgent = await FindAgentByIdAsync(id);
             if (OldAgent != null)
@@ -65,21 +63,35 @@ namespace MossadAgentsRest.Service
                 try
                 {
                     var test = stepsByDirection[move];
-
                     var (move_x, move_y) = test;
                     LocationDto location = new LocationDto()
-                    { Location_X = move_x + OldAgent.Location_X, Location_Y = move_y + OldAgent.Location_Y };
+                    { x = move_x + OldAgent.Location_X, y = move_y + OldAgent.Location_Y };
                     await PinAgentByIdAsync(location, id);
                 }
                 catch (Exception ex) 
                 { throw new Exception($"{ex.Message}", ex); }
             }
-            await _contects.SaveChangesAsync();
+            await _contexts.SaveChangesAsync();
             return OldAgent;
         }
 
+
+        public async Task<AgentModel?> FindAgentByIdAsync(int id) =>
+          await _contexts.AgentModel.FindAsync(id) ?? null;
+
         public async Task<List<AgentModel>> GetAllAgentAsync()=>
-            await contects.AgentModel.ToListAsync();
+            await contexts.AgentModel.ToListAsync();
+
+
+        public async Task DeleteAgentByIdAsync(int id)
+        {
+            AgentModel agent = await FindAgentByIdAsync(id);
+            if (agent != null)
+            {
+                _contexts?.AgentModel.Remove(agent);
+                await _contexts.SaveChangesAsync();
+            }
+        }
        
 
         private readonly Dictionary<string, (int x, int y)> stepsByDirection = new()
@@ -93,7 +105,5 @@ namespace MossadAgentsRest.Service
             {"sw", (x: -1,y: -1) },
             {"se", (x: 1,y: -1) }
         };
-
-
     }
 }
