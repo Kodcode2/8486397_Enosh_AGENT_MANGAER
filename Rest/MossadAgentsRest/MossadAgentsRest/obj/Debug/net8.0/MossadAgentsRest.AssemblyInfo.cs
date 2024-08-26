@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MossadAgentsRest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fb009978bb4b4367d0f94ae25600c139f60e9739")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d8c3bd02796225e42e6cd942bc9608c356b0f357")]
 [assembly: System.Reflection.AssemblyProductAttribute("MossadAgentsRest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MossadAgentsRest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -5,6 +5,7 @@
         public enum StatusTarget
         {
             Alive,
+            Active,
             dead
         }
         public int Id { get; set; }

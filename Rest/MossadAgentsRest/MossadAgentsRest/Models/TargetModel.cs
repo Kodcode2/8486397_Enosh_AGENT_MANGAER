@@ -7,8 +7,9 @@ namespace MossadAgentsRest.Models
         public enum StatusTarget
         {
             Alive,
+            Active,
             dead,
-            //Vctive
+           
         }
         public int Id { get; set; }
         public string? Name { get; set; }

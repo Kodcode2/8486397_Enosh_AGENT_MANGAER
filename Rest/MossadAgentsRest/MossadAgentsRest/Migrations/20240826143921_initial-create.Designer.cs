@@ -12,7 +12,7 @@ using MossadAgentsRest.Data;
 namespace MossadAgentsRest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240826063103_initial-create")]
+    [Migration("20240826143921_initial-create")]
     partial class initialcreate
     {
         /// <inheritdoc />

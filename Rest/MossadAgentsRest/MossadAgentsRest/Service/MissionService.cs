@@ -33,17 +33,19 @@ namespace MossadAgentsRest.Service
             {
                 if (agent.Status == AgentModel.StatusAgent.Active)
                 {
-                    await DeletMissionIfAgentActive(agent.Id);
+                    await DeleteMissionIfAgentActive(agent.Id);
                     continue;
                 }
                 foreach (var target in allTargets)
                 {
-                    if (target.Status == TargetModel.StatusTarget.dead)
+                    if (target.Status == TargetModel.StatusTarget.dead ||
+                        target.Status == TargetModel.StatusTarget.Active)
                     {
-                        await DeletMissionIfTargetDead(target.Id);
+                        await DeletMissionIfTargetDeadOrActive(target.Id);
                     }
                     var ChekId2 = await CheckAgentIdIfIsInMissionAndDelete(agent.Id, target.Id);              
-                    if (ChekId2 || target.Status == TargetModel.StatusTarget.dead )
+                    if (ChekId2 || target.Status == TargetModel.StatusTarget.dead ||
+                        target.Status == TargetModel.StatusTarget.Active)
                     {
                         continue;
                     }
@@ -154,12 +156,12 @@ namespace MossadAgentsRest.Service
             var oldmission = await _context.MissionModel.FindAsync(missionModel.Id);
             oldmission.Status = MissionModel.MissionStatus.finish;
             oldmission.KillTime = DateTime.Now;
-            if (_stopwatch[oldmission.Id] != null)
+            try
             {
                 _stopwatch[oldmission.Id].Stop();
                 oldmission.TimeFromStartToEnd = _stopwatch[oldmission.Id].Elapsed.ToString(@"hh\:mm\:ss");
             }
-            else
+            catch
             {
                 oldmission.TimeFromStartToEnd = "0";
             }
@@ -173,8 +175,10 @@ namespace MossadAgentsRest.Service
             if (m != null)
             {
                 var a = await GetAgentById(m.AgentId);
+                var t = await GetTargetById(m.TargetId);
                 m.Status = MissionModel.MissionStatus.Active;
                 a.Status = AgentModel.StatusAgent.Active;
+                t.Status = TargetModel.StatusTarget.Active;
                 await StartTimerActiveMission(m.Id);
                 await _context.SaveChangesAsync();
             }
@@ -218,7 +222,9 @@ namespace MossadAgentsRest.Service
             return m;
         }
 
-
+        public async Task<TargetModel?> GetTargetById(int targetId) =>
+            await _context.TargetModel.FindAsync(targetId);
+       
         public async Task<AgentModel?> GetAgentById(int agentId) =>
             await _context.AgentModel.FindAsync(agentId);
 
@@ -269,7 +275,7 @@ namespace MossadAgentsRest.Service
             return dashboard;
         }
 
-        public async Task DeletMissionIfAgentActive(int agentId)
+        public async Task DeleteMissionIfAgentActive(int agentId)
         {
             var missions = await GetAllmissionAsync();
             List<MissionModel> missionsToDelet = missions
@@ -285,13 +291,13 @@ namespace MossadAgentsRest.Service
         }
 
 
-        public async Task DeletMissionIfTargetDead(int TargetId)
+        public async Task DeletMissionIfTargetDeadOrActive(int TargetId)
         {
             var missions = await GetAllmissionAsync();
             List<MissionModel> missionsToDelet = missions
                 .Where(a => a.TargetId == TargetId)
-                .Where(a => a.Status != MissionModel.MissionStatus.Active
-                || a.Status != MissionModel.MissionStatus.finish)
+                .Where(a => a.Status != MissionModel.MissionStatus.Active)
+                .Where(a => a.Status != MissionModel.MissionStatus.finish)
                 .ToList();
             if (missionsToDelet.Count() > 0)
             {
@@ -299,5 +305,7 @@ namespace MossadAgentsRest.Service
                 await _context.SaveChangesAsync();
             }
         }
+
+      
     }
 }
