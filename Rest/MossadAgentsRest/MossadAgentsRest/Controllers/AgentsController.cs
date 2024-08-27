@@ -11,14 +11,14 @@ namespace MossadAgentsRest.Controllers
     public class agentsController(IAgentService agentService ,IMissionService missionService
         ) : ControllerBase
     {
-        [HttpGet]
+        [HttpGet]//קונטרולר שמציג את כל הסוכנים
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<AgentModel>>> GetAll() =>
             Ok(await agentService.GetAllAgentAsync());
 
 
-        [HttpPost]
+        [HttpPost]//יוצר סוכן חדש
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<AgentDto>> CreatAgent(AgentDto agent)
@@ -33,7 +33,7 @@ namespace MossadAgentsRest.Controllers
         }
 
 
-        [HttpPut("{id}/update")]
+        [HttpPut("{id}/update")]//מעדכן סוכן לפי id
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<string>> UpdateAgent(AgentDto agent ,int id)
@@ -48,7 +48,7 @@ namespace MossadAgentsRest.Controllers
         }
 
 
-        [HttpPut("{id}/pin")]
+        [HttpPut("{id}/pin")]//קביעת מיקום רישוני של סוכן
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<string>> PinAgent(LocationDto Location, int id)
@@ -63,7 +63,7 @@ namespace MossadAgentsRest.Controllers
         }
 
 
-        [HttpPut("{id}/move")]
+        [HttpPut("{id}/move")]//מזיז סוכן לפי אות שמייצגת כיוון
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<string>> MoveAgent(string move, int id)

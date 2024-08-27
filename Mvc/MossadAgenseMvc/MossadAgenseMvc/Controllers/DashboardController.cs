@@ -8,7 +8,7 @@ namespace MossadAgenseMvc.Controllers
     {
         private readonly string BaseUrl = "https://localhost:7024/missions";
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()//הצגת נתונים כללים על סטטוס הפרוייקט
         {
             var httpClient = clientFactory.CreateClient();
                  var responceAgent = await httpClient.GetAsync($"{BaseUrl}/Dashboard");

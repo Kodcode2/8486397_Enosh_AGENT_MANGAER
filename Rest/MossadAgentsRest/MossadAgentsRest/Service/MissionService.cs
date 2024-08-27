@@ -16,39 +16,41 @@ namespace MossadAgentsRest.Service
 
         private readonly ApplicationDbContext _context = context;
 
-
+        //מפעיל את פונקציית הניהול של ההצעות לציוות מפעילים אותה על כל פעולה שקורת בפרוייקט
         public async Task DoMission()
         {          
             await ManageMission();
             return ;
         }
+        //פונקצייה שמנהלת את ההצעות לציוות יוצרת חדשים ומוחקת מה שלא רלוונטי
         public async Task<MissionModel?> ManageMission()
         {
             List<AgentModel> allAgents = await _context.AgentModel.ToListAsync();
             List<TargetModel> allTargets = await _context.TargetModel.ToListAsync();
             MissionModel newMission = new MissionModel();
             List<MissionModel> missionsToAdd = [];
-
+            //לולאה מקוננת שמייצרת ומוחקת הצעות לציוות
             foreach (var agent in allAgents)
-            {
+            {   //אם סוכן פעיל מוחקים את כל שאר ההצעות לציוות שיש עם המזהה שלו
                 if (agent.Status == AgentModel.StatusAgent.Active)
-                {
+                {    
                     await DeleteMissionIfAgentActive(agent.Id);
                     continue;
                 }
                 foreach (var target in allTargets)
-                {
+                {    //תנאי שבודק אם יעד מת או בפעולה ומוחקת אותו מהרשימה
                     if (target.Status == TargetModel.StatusTarget.dead ||
                         target.Status == TargetModel.StatusTarget.Active)
                     {
                         await DeletMissionIfTargetDeadOrActive(target.Id);
-                    }
+                    }// ואם הבודק מרחק בין יעד לסוכן ומחזיר אמת אם הם מחוץ לטווח ואם הם יצאו מהטווח מוחקת אותם
+                    //ובודק גם שהם לא נמצאים כבר הרשימת ההצעות
                     var ChekId2 = await CheckAgentIdIfIsInMissionAndDelete(agent.Id, target.Id);              
                     if (ChekId2 || target.Status == TargetModel.StatusTarget.dead ||
                         target.Status == TargetModel.StatusTarget.Active)
                     {
                         continue;
-                    }
+                    }//מחשב את הטווח ומייצר חדש במקרה הצורך
                     if (await CalculateRange(agent, target) <= 200)
                     {
                         newMission.AgentId = agent.Id;
@@ -59,7 +61,7 @@ namespace MossadAgentsRest.Service
                         newMission.LeftTime = TimeSpan.FromHours
                             ( await CalculateRange(agent, target) / 5)
                             .ToString(@"hh\:mm\:ss");                        
-                    }                    
+                    }     //אם התקיימו התנאים מכניס אותם לרשימה               
                     missionsToAdd.Add(newMission);
                 }
             }
@@ -68,7 +70,7 @@ namespace MossadAgentsRest.Service
             return newMission;
         }
 
-
+        //חישוב מרחק לפי נוסחה
         public async Task<double> CalculateRange(AgentModel agent, TargetModel target)
         {
             double time = Math.Sqrt(Math.Pow(agent.Location_X - target.Location_X, 2)
@@ -76,7 +78,7 @@ namespace MossadAgentsRest.Service
             return time;
         }
 
-
+        //מציג את כל הסוכנים או היעדים או המשימות
         public async Task<List<TargetModel>> GetAllTargetsAsync() =>
             await _context.TargetModel.ToListAsync();
         public async Task<List<MissionModel>> GetAllmissionAsync() =>
@@ -84,7 +86,7 @@ namespace MossadAgentsRest.Service
         public async Task<List<AgentModel>> GetAllAgentsAsync() =>
             await _context.AgentModel.ToListAsync();
 
-
+        //בודק את הטווח ומוחק אם יצאו מהטווח ומחזיר שקר אם קיים כבר הצעה עם אותו סוכן ואותו יעד
         public async Task<bool> CheckAgentIdIfIsInMissionAndDelete(int AgentId, int targetId)
         {
             var OldMissions = await GetAllmissionAsync();
@@ -104,7 +106,7 @@ namespace MossadAgentsRest.Service
             return false;
         }
 
-
+        //מזיז סוכן ליעד
         public async Task MoveAgentToTarget()
         {
             var allMissions = await GetMissionByStatus();
@@ -123,16 +125,15 @@ namespace MossadAgentsRest.Service
                 mission.Agent.Location_Y = agent_y;
                 await _context.SaveChangesAsync();
                 if (agent_x == target_x && agent_y == target_y)
-                {
+                {   //הורג את היעד אם הם באותו מיקום
                     await KillTarget(mission);
                     int d = 5;
                     continue;
-                    //return;
                 }
             }
         }
 
-
+        //מציג סוכנים לפי סטטוס
         public async Task<List<MissionModel>> GetMissionByStatus()
         {
             var newlist = await _context.MissionModel
@@ -145,7 +146,7 @@ namespace MossadAgentsRest.Service
             return newlist;
         }
 
-
+        //הורג יעד
         public async Task KillTarget(MissionModel missionModel)
         {
             var killtarget = await _context.TargetModel.FindAsync(missionModel.TargetId);
@@ -157,7 +158,7 @@ namespace MossadAgentsRest.Service
             oldmission.Status = MissionModel.MissionStatus.finish;
             oldmission.KillTime = DateTime.Now;
             try
-            {
+            {   //מילון שמחשב את זמן ביצוע הפעולה לפי טיימר
                 _stopwatch[oldmission.Id].Stop();
                 oldmission.TimeFromStartToEnd = _stopwatch[oldmission.Id].Elapsed.ToString(@"hh\:mm\:ss");
             }
@@ -168,7 +169,7 @@ namespace MossadAgentsRest.Service
             await _context.SaveChangesAsync();
         }
 
-
+        //הפיכת משימה לפעילה
         public async Task ChangeStatusToActive(int id)
         {
             var m = await GetMissionByIdIncludObjectsAsync(id);
@@ -188,7 +189,7 @@ namespace MossadAgentsRest.Service
             }
         }
 
-
+        //מילון ופונקציה שמחשבים את זמן ביצוע הפעולה
         private static Dictionary<int, Stopwatch> _stopwatch = new();
         public async Task StartTimerActiveMission(int idMission)
         {
@@ -211,7 +212,7 @@ namespace MossadAgentsRest.Service
             }
         }
 
-
+        //מביא את כל ההצעות כולל האובייקטים
         public async Task<MissionModel> GetMissionByIdIncludObjectsAsync(int missionId)
         {
             var m = await _context.MissionModel
@@ -221,26 +222,26 @@ namespace MossadAgentsRest.Service
                 .FirstOrDefaultAsync();
             return m;
         }
-
+        //מביא את כל היעדים
         public async Task<TargetModel?> GetTargetById(int targetId) =>
             await _context.TargetModel.FindAsync(targetId);
-       
+       //מביא את כל הסוכנים לפי מזהה
         public async Task<AgentModel?> GetAgentById(int agentId) =>
             await _context.AgentModel.FindAsync(agentId);
-
+        //מביא את כל ההצעות לפי מזהה
         public async Task<MissionModel?> GetMissionById(int id) =>
             await _context.MissionModel.FindAsync(id);
-
+        //מביא את כל ההצעות
         public async Task<List<MissionModel>> GetAllMissionsAsync() =>
              await _context.MissionModel.ToListAsync();
 
-
+        //מוחק הצעה אם יצאו מהטווח
         public async Task<bool> DeleteIfOutOfRange(MissionModel mission)
         {
             if (mission.Status == MissionModel.MissionStatus.Active)
             {
                 return false;
-            }
+            } ///מחשב את הטווח
             var b = await CalculateRange(mission.Agent, mission.Target) > 200;
             if (b)
             {
@@ -249,7 +250,7 @@ namespace MossadAgentsRest.Service
             return false;        
         }
 
-
+        //מציג נתונים כלליים על הפרוייקט
         public async Task<DashboardModel> GetDashboardModel()
         {
             DashboardModel dashboard = new DashboardModel();
@@ -274,7 +275,7 @@ namespace MossadAgentsRest.Service
             dashboard.RelationAgentsToTargets = agentModels.Count() / targetModels.Count();
             return dashboard;
         }
-
+        //מוחק הצעה אם הסוכן פעיל
         public async Task DeleteMissionIfAgentActive(int agentId)
         {
             var missions = await GetAllmissionAsync();
@@ -290,7 +291,7 @@ namespace MossadAgentsRest.Service
             }
         }
 
-
+        //מוחק הצעה אם היעד פעיל או מת
         public async Task DeletMissionIfTargetDeadOrActive(int TargetId)
         {
             var missions = await GetAllmissionAsync();

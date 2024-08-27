@@ -8,7 +8,7 @@ namespace MossadAgentsRest.Service
     public class TargetService(ApplicationDbContext context) : ITargetService
     {
         private readonly ApplicationDbContext _context = context;
-
+        //קביעת מיקום ראשוני של יעד עי מזהה
         public async Task<TargetModel?> PinAgentByIdAsync(LocationDto pin, int id)
         {
             TargetModel? OldTarget = await FindTargetByIdAsync(id);
@@ -21,7 +21,7 @@ namespace MossadAgentsRest.Service
             return OldTarget;
         }
 
-
+        //יצירת יעד חדש
         public async Task<TargetModel?> CreateTargetAsync(TargetDto target)
         {
             TargetModel newTarget = new TargetModel()
@@ -37,14 +37,14 @@ namespace MossadAgentsRest.Service
             return newTarget;
         }
 
-  
+        //מציאת יעד לפי מזהה
         public async Task<TargetModel?> FindTargetByIdAsync(int id) =>
            await _context.TargetModel.FindAsync(id) ?? null;
-
+        //מציאת כל היעדים
         public async Task<List<TargetModel>> GetAllTargetAsync() =>
             await context.TargetModel.ToListAsync();
 
-
+        //עדכון פרטים של יעד
         public async Task<TargetModel?> UpdatTargetAsync(TargetDto target, int id)
         {
             TargetModel? OldTarget = await FindTargetByIdAsync(id);
@@ -60,7 +60,7 @@ namespace MossadAgentsRest.Service
             return OldTarget;
         }
 
-
+        //הזזת מיקום שליעד
         public async Task<TargetModel?> MoveTargetByIdAsync(string move, int id)
         {
             TargetModel? OldTarget = await FindTargetByIdAsync(id);
@@ -82,7 +82,7 @@ namespace MossadAgentsRest.Service
             return OldTarget;
         }
 
-
+        //מילון שמכיל כמפתח אות שמסמלת כיוון וערך כיוון התזוזה שלו בציר האיקס והווי
         private readonly Dictionary<string, (int x, int y)> stepsByDirection = new()
         {
             {"n", (x: 0,y: 1) },

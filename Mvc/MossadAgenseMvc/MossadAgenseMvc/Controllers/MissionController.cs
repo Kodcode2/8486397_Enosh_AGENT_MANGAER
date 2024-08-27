@@ -7,11 +7,10 @@ namespace MossadAgenseMvc.Controllers
     public class MissionController(IHttpClientFactory clientFactory) : Controller
     {
         private readonly string BaseUrl = "https://localhost:7024";
-        [HttpGet]
+        [HttpGet]//הצגת כל המשימות
         public async Task<IActionResult> Index()
         {
-            var httpClient = clientFactory.CreateClient();
-            
+            var httpClient = clientFactory.CreateClient();           
             var responce = await httpClient.GetAsync($"{BaseUrl}/missions");
             if (responce.IsSuccessStatusCode)
             {
@@ -22,7 +21,7 @@ namespace MossadAgenseMvc.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
+        //עדכון משימה לפעילה
         public async Task<IActionResult> UpdateToActive(int id)
         {
             var httpClient = clientFactory.CreateClient();
@@ -36,7 +35,7 @@ namespace MossadAgenseMvc.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet]//הצגת פרטי משימה
         public async Task<IActionResult> Details(int id)
         {
             var httpClient = clientFactory.CreateClient();

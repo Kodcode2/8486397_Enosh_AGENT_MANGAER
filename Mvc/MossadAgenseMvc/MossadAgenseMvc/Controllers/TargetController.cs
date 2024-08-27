@@ -7,12 +7,10 @@ namespace MossadAgenseMvc.Controllers
     public class TargetController(IHttpClientFactory clientFactory) : Controller
     {
         private readonly string BaseUrl = "https://localhost:7024";
-        [HttpGet]
+        [HttpGet]//הצגת כל היעדים
         public async Task<IActionResult> Index()
         {
             var httpClient = clientFactory.CreateClient();
-            //var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/Targets");
-            //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authenticatin.Token);
             var responce = await httpClient.GetAsync($"{BaseUrl}/targets");
             if (responce.IsSuccessStatusCode)
             {

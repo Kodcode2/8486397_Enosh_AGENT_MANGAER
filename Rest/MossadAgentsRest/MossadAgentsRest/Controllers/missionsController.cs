@@ -10,28 +10,28 @@ namespace MossadAgentsRest.Controllers
     [ApiController]
     public class missionsController(IMissionService missionService) : ControllerBase
     {
-        [HttpGet]
+        [HttpGet]//מציג את כל ההצעות לציוות
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<MissionModel>>> GetAllMissions() =>
             Ok(await missionService.GetAllMissionsAsync());
 
 
-        [HttpGet("id")]
+        [HttpGet("id")]//מציג הצעה לפי מזהה הצעה
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MissionModel>> GetMissionById(int id) =>
             Ok(await missionService.GetMissionById(id));
 
 
-        [HttpGet("Dashboard")]
+        [HttpGet("Dashboard")]//מציג נתונים ללוח המחוונים על סטטוס כללי של הסוכנים והמטרות
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<DashboardModel>>> GetInfoToDashboard() =>
            Ok(await missionService.GetDashboardModel());
 
 
-        [HttpPost("create")]
+        [HttpPost("create")]//יוצר הצעה חדשה אמור לרוץ ברקע כל הזמן מפעילים בהפעלת הפרוייקט
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> CreateMissions()
@@ -46,7 +46,7 @@ namespace MossadAgentsRest.Controllers
         }
 
 
-        [HttpPost("update")]
+        [HttpPost("update")]//מזיז את כל מי שפעיל צעד אחד לכיוון היעד
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Update()
@@ -57,7 +57,7 @@ namespace MossadAgentsRest.Controllers
         }
 
 
-        [HttpPut("active/{id}")]
+        [HttpPut("active/{id}")]//מעדכן סטטוס משימה לפעילה לפי מזהה משימה
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> ChangeStatus(int id)

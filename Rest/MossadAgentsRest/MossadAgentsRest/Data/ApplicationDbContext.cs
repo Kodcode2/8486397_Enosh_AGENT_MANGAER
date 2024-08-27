@@ -5,25 +5,12 @@ namespace MossadAgentsRest.Data
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): DbContext(options)
     {
-        // Seed()
-        private async Task Seed()
-        {
-            if (AgentModel == null)
-            {
-                AgentModel agent = new AgentModel
-                {
-                    Image = "",
-                    Name = "Enosh",
-                    Location_X = 5,
-                    Location_Y = 5,
-                    //Status = ,
-                };
-            };
-        }
-
+       
+        //יצירת טבלאות לדתה בייס על פי המודלים
         public DbSet<AgentModel> AgentModel { get; set; }
         public DbSet<TargetModel> TargetModel { get; set; }
         public DbSet<MissionModel> MissionModel { get; set; }
+        //הגדרת היחסים לדתה בייס
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MissionModel>()
@@ -49,11 +36,7 @@ namespace MossadAgentsRest.Data
                .Property(m => m.Status)
                .HasConversion<string>()
                .IsRequired();
-            /* modelBuilder.Entity<MissionModel>()
-                 .HasOne(m => m.Target)
-                 .WithMany()
-                 .HasForeignKey(m => m.TargetId)
-                 .OnDelete(DeleteBehavior.Restrict);*/
+          
 
             base.OnModelCreating(modelBuilder);
         }

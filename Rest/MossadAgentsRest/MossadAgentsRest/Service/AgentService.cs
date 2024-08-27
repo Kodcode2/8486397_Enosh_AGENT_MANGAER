@@ -8,7 +8,7 @@ namespace MossadAgentsRest.Service
     public class AgentService(ApplicationDbContext contexts) : IAgentService
     {
         private readonly ApplicationDbContext _contexts = contexts;
-
+        //יצירת סוכן חדש
         public async Task<AgentModel?> CreateAgentAsync(AgentDto agent)
         {
             AgentModel newAgent = new AgentModel()
@@ -24,7 +24,7 @@ namespace MossadAgentsRest.Service
             return newAgent;
         }
 
-
+        //עדכון פרטי סוכן
         public async Task<AgentModel?>UpdatAgentAsync(AgentDto agent, int id)
         {
             AgentModel? OldAgent = await FindAgentByIdAsync(id);
@@ -41,7 +41,7 @@ namespace MossadAgentsRest.Service
             return OldAgent;
         }
 
-
+        //קביעת מיקום ראשוני סוכן 
         public async Task<AgentModel?> PinAgentByIdAsync(LocationDto pin, int id)
         {
             AgentModel? OldAgent = await FindAgentByIdAsync(id);
@@ -54,7 +54,7 @@ namespace MossadAgentsRest.Service
             return OldAgent;
         }
 
-
+        //הזזת סוכן אל לפי מזהה
         public async Task<AgentModel?> MoveAgentByIdAsync(string move, int id)
         {
             AgentModel? OldAgent = await FindAgentByIdAsync(id);
@@ -75,14 +75,14 @@ namespace MossadAgentsRest.Service
             return OldAgent;
         }
 
-
+        //מציאת סוכן לפי מזהה
         public async Task<AgentModel?> FindAgentByIdAsync(int id) =>
           await _contexts.AgentModel.FindAsync(id) ?? null;
-
+        //מציאת כל הסוכנים
         public async Task<List<AgentModel>> GetAllAgentAsync()=>
             await contexts.AgentModel.ToListAsync();
 
-
+        //מחיקת סוכן לפי מזהה
         public async Task DeleteAgentByIdAsync(int id)
         {
             AgentModel agent = await FindAgentByIdAsync(id);
@@ -92,8 +92,8 @@ namespace MossadAgentsRest.Service
                 await _contexts.SaveChangesAsync();
             }
         }
-       
 
+        //מילון שמכיל כמפתח אות שמסמלת כיוון וערך כיוון התזוזה שלו בציר האיקס והווי
         private readonly Dictionary<string, (int x, int y)> stepsByDirection = new()
         {
             {"n", (x: 0,y: 1) },

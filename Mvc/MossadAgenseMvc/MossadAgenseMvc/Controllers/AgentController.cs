@@ -9,7 +9,7 @@ namespace MossadAgenseMvc.Controllers
     public class AgentController(IHttpClientFactory clientFactory) : Controller
     {
         private readonly string BaseUrl = "https://localhost:7024";
-        [HttpGet]
+        [HttpGet]//הצגת כל הסוכנים
         public async Task<IActionResult> Index()
         {
             var httpClient = clientFactory.CreateClient();
@@ -25,7 +25,7 @@ namespace MossadAgenseMvc.Controllers
 
         }
 
-        public IActionResult Update(int id)
+        public IActionResult Update(int id)//לא פעיל
         {
             return View(new AgentModel() { Id = id});
         }
